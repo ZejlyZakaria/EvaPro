@@ -1,0 +1,18 @@
+.logo_full {
+    display: block;
+}
+
+.logo_mobile {
+    display: none;
+}
+
+@media (max-width: 769px) {
+    .logo_full {
+        display: none;
+    }
+
+    .logo_mobile {
+        display: block;
+        text-align: center;
+    }
+}
