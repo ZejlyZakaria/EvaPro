@@ -16,6 +16,9 @@
 </template>
 
 <script>
+window.setInterval(function() {
+  this.getNotificationsCount;
+}, 5000);
 export default {
     data() {
         return {
