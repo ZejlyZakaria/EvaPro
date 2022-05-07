@@ -18,10 +18,10 @@ class CreateNotifications extends Migration
             $table->string('type');
             $table->string('content');
             $table->boolean('seen');
-            $table->bigInteger('id_provider')->unsigned();
+            $table->bigInteger('id_provider')->unsigned()->nullable();
             $table->foreign('id_provider')->references('id')->on('users');
-            $table->bigInteger('id_project')->unsigned();
-            $table->foreign('id_project')->references('id')->on('projects');
+            $table->bigInteger('id_admin')->unsigned()->nullable();
+            $table->foreign('id_admin')->references('id')->on('admins');
             $table->timestamps();
         });
     }

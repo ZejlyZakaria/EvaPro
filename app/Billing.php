@@ -17,4 +17,5 @@ class Billing extends Model
     {
         return $this->hasOne('App\Balance');
     }
+
 }

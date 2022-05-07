@@ -9,17 +9,20 @@
         aria-expanded="false"
         @click="setSeen"
     >
-        <i class="fas fa-bell fa-fw"></i>
+        <i class="fas fa-bell fa-fw text-firstC"></i>
         <!-- Counter - Alerts -->
-        <span v-if="notificationsCount != ''" class="badge badge-danger badge-counter">{{ notificationsCount }}</span>
+        <span v-show="notificationsCount != ''" class="badge badge-danger badge-counter">{{ notificationsCount }}</span>
     </a>
 </template>
 
 <script>
-window.setInterval(function() {
-  this.getNotificationsCount;
-}, 5000);
 export default {
+    mounted() {
+        this.interval = setInterval(function() {
+            this.getNotificationsCount();
+
+        }.bind(this), 10000)
+    },
     data() {
         return {
             provider: {
@@ -28,22 +31,48 @@ export default {
                     .getAttribute("content")
             },
             notificationsCount: "",
+            counter: 0,
+            firstNotification: "",
         };
     },
     methods: {
         getNotificationsCount() {
             axios.post("api/getNotificationsCount/" + this.provider.provider_id).then(response => {
                 this.notificationsCount = response.data.count;
+                if(this.counter == 0) {
+                    this.firstNotification = this.notificationsCount;
+                    this.counter++;
+                }
+                if (this.notificationsCount != this.firstNotification) {
+                    this.playSound();
+                    this.notify();
+                    this.firstNotification = this.notificationsCount;
+
+                }
             });
         },
         setSeen() {
             axios.post("api/setSeen/" + this.provider.provider_id).then(response => {
                 this.notificationsCount = "";
+                this.firstNotification = "";
+            });
+        },
+        playSound() {
+            var audio = new Audio("https://media1.vocaroo.com/mp3/15qmUOrvxTYa");
+            audio.play();
+        },
+        notify() {
+            Toast.fire({
+                iconHtml: "<i class='fas fa-bell fa-fw'></i>",
+                position: "bottom-end",
+                iconColor: "#007bff",
+                title: "You have a new notification!"
             });
         }
     },
     created() {
         this.getNotificationsCount();
+
     }
 };
 </script>

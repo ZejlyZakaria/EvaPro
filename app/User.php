@@ -18,7 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'full_name', 'email', 'phone', 'type', 'social_security_number', 'image','password',
+        'first_name', 'last_name', 'full_name', 'email', 'phone', 'type', 'social_security_number', 'image','password','project_count',
     ];
 
     /**
@@ -49,8 +49,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Project');
     }
 
-    public function payment()
+    public function payments()
     {
-        return $this->hasOne('App\Payment');
+        return $this->hasMany('App\Payment');
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany('App\Expense');
     }
 }

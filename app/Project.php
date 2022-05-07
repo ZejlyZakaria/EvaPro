@@ -21,4 +21,14 @@ class Project extends Model
         return $this->hasOne('App\Billing');
     }
 
+    public function expenses()
+    {
+        return $this->hasMany('App\Expense');
+    }
+
+    public function calendars()
+    {
+        return $this->hasMany('App\Calendar');
+    }
+
 }

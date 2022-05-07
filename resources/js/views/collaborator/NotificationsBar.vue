@@ -3,20 +3,28 @@
         class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
         aria-labelledby="alertsDropdown"
     >
-        <h6 class="dropdown-header">
+        <h6
+            class="dropdown-header"
+            style="background-color: #4B0082; border-color: #4B0082"
+        >
             Alerts Center
         </h6>
         <div class="overflow-auto scrollNotify" style="max-height: 320px">
             <a
                 class="dropdown-item d-flex align-items-center"
-                href="#"
                 v-for="notification in notifications"
                 :key="notification.id"
             >
-                <div class="d-flex">
+                <div class="d-flex" @click="redirectTo(notification.type)" style="cursor: pointer">
                     <div class="mr-3">
                         <div class="icon-circle bg-primary">
-                            <i class="fas fa-briefcase text-white"></i>
+                            <i
+                                :class="[
+                                    notification.type == 'project'
+                                        ? 'fas fa-briefcase text-white'
+                                        : 'fas fa-file-invoice-dollar text-white'
+                                ]"
+                            ></i>
                         </div>
                     </div>
                     <div>
@@ -65,6 +73,15 @@
 
 <script>
 export default {
+    mounted() {
+        this.getNotifications();
+        this.interval = setInterval(
+            function() {
+                this.getNotifications();
+            }.bind(this),
+            10000
+        );
+    },
     data() {
         return {
             provider: {
@@ -85,6 +102,11 @@ export default {
         },
         isEmpty(obj) {
             return Object.keys(obj).length === 0;
+        },
+        redirectTo(elem) {
+            if (elem == "expense") {
+                window.location.href = "/mybillings";
+            }
         }
     },
     created() {

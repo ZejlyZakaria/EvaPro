@@ -13,8 +13,13 @@ class Payment extends Model
         return $this->hasOne('App\Balance');
     }
 
-    public function collaborator()
+    public function user()
     {
-        return $this->belongsTo('App\Collaborator');
+        return $this->belongsTo('App\User');
+    }
+
+    public function billing()
+    {
+        return $this->belongsTo('App\Billing');
     }
 }

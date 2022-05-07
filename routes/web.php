@@ -17,6 +17,35 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Routes for Vuejs (ADMIN)
+Route::get('/billings', 'AdminController@index')->name('admin.dashboard');
+Route::get('/collaborators', 'AdminController@index')->name('admin.dashboard');
+Route::get('/addprovider', 'AdminController@index')->name('admin.dashboard');
+Route::get('/createproject', 'AdminController@index')->name('admin.dashboard');
+Route::get('/profil', 'AdminController@index')->name('admin.dashboard');
+Route::get('/addadmin', 'AdminController@index')->name('admin.dashboard');
+Route::get('/profil', 'AdminController@index')->name('admin.dashboard');
+Route::get('/test', 'AdminController@index')->name('admin.dashboard');
+Route::get('/newbillings', 'AdminController@index')->name('admin.dashboard');
+Route::get('/newprofil', 'AdminController@index')->name('admin.dashboard');
+Route::get('/providers', 'AdminController@index')->name('admin.dashboard');
+Route::get('/projects', 'AdminController@index')->name('admin.dashboard');
+Route::get('/encours', 'AdminController@index')->name('admin.dashboard');
+Route::get('/paiements', 'AdminController@index')->name('admin.dashboard');
+Route::get('/admins', 'AdminController@index')->name('admin.dashboard');
+Route::get('/commissions', 'AdminController@index')->name('admin.dashboard');
+// End Routes fue Vuejs
+
+// Routes for Vuejs (USER)
+Route::get('/myprojects', 'HomeController@index')->name('home');
+Route::get('/myprofil', 'HomeController@index')->name('home');
+Route::get('/reportwork', 'HomeController@index')->name('home');
+Route::get('/newreportwork', 'HomeController@index')->name('home');
+Route::get('/mybillings', 'HomeController@index')->name('home');
+Route::get('/myexpenses', 'HomeController@index')->name('home');
+Route::get('/mydashboard', 'HomeController@index')->name('home');
+// End Routes fue Vuejs
+
 Route::get('send','MailController@mailsend');
 
 // admin

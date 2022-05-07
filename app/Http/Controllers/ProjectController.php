@@ -8,7 +8,7 @@ use App\Commission;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use App\Mail\SendEmail;
+use App\Mail\NotifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
@@ -31,7 +31,6 @@ class ProjectController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
             'outstanding' => 'required',
-            'commission' => 'required',
 
         ]);
 
@@ -49,34 +48,27 @@ class ProjectController extends Controller
         $project->start_date = $date1;
         $project->end_date = $date2;
         $project->outstanding = $request->outstanding;
-        $project->commission = $request->commission;
-        $project->total_commission = $request->commission;
         $project->id_provider = $request->provider;
 
         $project->save();
 
-        $commission = new Commission();
-        if ($request->commissionType == "rate")
-        {
-            $commission->commission_rate = $request->commission;
-        }
-        else
-        {
-            $commission->commission_value = $request->commission;
-        }
-        $commission->start_date = $date1;
-        $commission->end_date = $date2;
-        $commission->id_project = $project->id;
-        $commission->save();
-
         $notification = new Notification();
         $notification->type = "project";
-        $notification->content = "Another project has assigned to you!";
+        $notification->content = "vous avez un nouveau projet";
         $notification->seen = false;
         $notification->id_provider = $request->provider;
-        $notification->id_project = $project->id;
 
         $notification->save();
+
+        $user = User::find($request->provider);
+        $user->project_count = $user->project_count + 1;
+        $user->save();
+
+        $details = [
+            'title' => "Un nouveau projet vous est assigné.",
+            'content' => "Veuillez vérifier votre compte, vous avez un nouveau projet!"
+        ];
+        Mail::to($user->email)->send(new NotifyEmail($details));
 
         return response()->json(['status' => 'success', 'data' => $project]);
     }
@@ -85,5 +77,40 @@ class ProjectController extends Controller
     {
         $projects = DB::table('projects')->where('id_provider', $user_id)->get();
         return response()->json(['status' => 'success', 'data' => $projects]);
+    }
+
+    public function getProject(Request $request, $project_id)
+    {
+        $project = DB::table('projects')->where('id', $project_id)->first();
+        return response()->json(['status' => 'successProject', 'data' => $project]);
+    }
+
+    public function getProjectName(Request $request, $project_id)
+    {
+        $project = DB::table('projects')->where('id', $project_id)->first();
+        return response()->json(['status' => 'success', 'data' => $project->name]);
+    }
+
+    public function getClientName(Request $request, $project_id)
+    {
+        $project = DB::table('projects')->where('id', $project_id)->first();
+        return response()->json(['status' => 'success', 'data' => $project->client]);
+    }
+
+    public function getProjectsCountDash()
+    {
+        $projects = DB::table('projects')->get();
+        return response()->json(['status' => 'success', 'data' => $projects]);
+    }
+
+    public function getProjectsCountPro(Request $request, $id_provider)
+    {
+        $projects = DB::table('projects')->where("id_provider", $id_provider)->count();
+        return response()->json(['status' => 'success', 'data' => $projects]);
+    }
+
+    public function showProjects()
+    {
+        return Project::latest()->paginate(10);
     }
 }
